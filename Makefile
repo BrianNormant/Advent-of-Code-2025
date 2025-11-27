@@ -12,9 +12,9 @@ d%-java: ./src/day%/Solution.java
 	ln -sf ../solutions/day$*.txt ./java/solution.txt
 	ln -sf ../inputs/day$*.txt ./java/input.txt
 	# stupid gradle and java obession with org.application.module...
-	ln -sf ../../../../../../../$< ./java/app/src/main/java/org/example/Solution.java
+	ln -sf ../$< ./java/Solution.java
 	
-	cd ./java ; gradle run
+	cd ./java ; java Main.java
 
 d%-idr: ./src/day%/Solution.idr
 	ln -sf ../solutions/day$*.txt ./idris/solution.txt

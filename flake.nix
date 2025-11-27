@@ -14,7 +14,6 @@
 				zsh
 
 				# Java
-				gradle
 				jdk25
 				
 				# Idris

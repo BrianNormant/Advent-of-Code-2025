@@ -1,5 +1,3 @@
-package org.example;
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -24,9 +22,4 @@ public class Main {
 		System.out.print(sol);
 		System.exit(0);
 	}
-
-    public String getGreeting() {
-        return "Hello World!";
-    }
 }
-
