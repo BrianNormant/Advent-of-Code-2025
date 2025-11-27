@@ -1,0 +1,10 @@
+build
+idris/input.txt
+idris/solution.txt
+idris/src/Solution.idr
+java/.settings
+java/app/src/main/java/org/example/Solution.java
+java/gradle
+java/input.txt
+java/solution.txt
+java/.gradle

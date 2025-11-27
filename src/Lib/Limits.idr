@@ -1,0 +1,43 @@
+module Lib.Limits
+
+%default total
+
+export BITS8_MAX : Bits8
+export BITS8_MIN : Bits8
+BITS8_MAX = 0 - 1
+BITS8_MIN = 0
+
+export BITS16_MAX : Bits16
+export BITS16_MIN : Bits16
+BITS16_MAX = 0 - 1
+BITS16_MIN = 0
+
+export BITS32_MAX : Bits32
+export BITS32_MIN : Bits32
+BITS32_MAX = 0 - 1
+BITS32_MIN = 0
+
+export BITS64_MAX : Bits64
+export BITS64_MIN : Bits64
+BITS64_MAX = 0 - 1
+BITS64_MIN = 0
+
+export INT8_MAX : Int8
+export INT8_MIN : Int8
+INT8_MAX = 127
+INT8_MIN = -128
+
+export INT16_MAX : Int16
+export INT16_MIN : Int16
+INT16_MAX = 32767
+INT16_MIN = -32768
+
+export INT32_MAX : Int32
+export INT32_MIN : Int32
+INT32_MAX = 2147483647
+INT32_MIN = -2147483648
+
+export INT64_MAX : Int64
+export INT64_MIN : Int64
+INT64_MAX = 9223372036854775807
+INT64_MIN = -9223372036854775808
