@@ -15,7 +15,7 @@ d%-java: ./src/day%/Solution.java
 	
 	ln -sf ../$< ./java/Solution.java
 	
-	cd ./java ; java Main.java
+	cd ./java ; java Main.java $(VALIDATE)
 
 # Default is to use the example and solution
 # set VALIDATE to use the input
