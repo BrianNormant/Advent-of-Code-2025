@@ -41,7 +41,10 @@
 				export PROJECT=AOC2025
 				export SHELL=zsh
                 # override idris2 and idris2-lsp to the lastest version compiled by pack
-                export PATH=$PATH:/home/brian/.pack/bin
+                # export PATH=$PATH:/home/brian/.pack/bin
+				export IDRIS2_PACKAGE_PATH=$(pack package-path)
+				export IDRIS2_DATA=$(pack data-path)
+				export IDRIS2_LIBS=$(pack libs-path)
 				exec zsh
 			'';
 		};
