@@ -66,13 +66,21 @@ select-day:
 	@echo "Set links to day $(DAY)"
 
 init-java:
-	@if [ -z $(DAY) ]; then echo "please specify a day with DAY=xx"; exit -1; fi
+	@if [ "$(DAY)" -gt 12 ]; then \
+		echo "max day is 12"; \
+		exit 1; \
+	fi
+	if [ ! -e "./src/day$(DAY)" ]; then mkdir ./src/day$(DAY); fi
 	cp ./templates/Solution.java ./src/day$(DAY)/Solution.java
 	touch ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
-	@echo "created empty files for input,example,solution, please fill them"
+	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt 
 
 init-idr:
-	@if [ -z $(DAY) ]; then echo "please specify a day with DAY=xx"; exit -1; fi
+	@if [ "$(DAY)" -gt 12 ]; then \
+		echo "max day is 12"; \
+		exit 1; \
+	fi
+	if [ ! -e "./src/day$(DAY)" ]; then mkdir ./src/day$(DAY); fi
 	cp ./templates/Solution.idr ./src/day$(DAY)/Solution.idr
 	touch ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
-	@echo "created empty files for input,example,solution, please fill them"
+	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt 
