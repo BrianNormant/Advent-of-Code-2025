@@ -11,7 +11,6 @@ else
 	DAY_SRC := auto
 endif
 
-.PHONY: $(DAYS_JAVA) $(DAYS_IDR2)
 .SILENT: list
 
 d%-java: ./src/day%/Solution.java
