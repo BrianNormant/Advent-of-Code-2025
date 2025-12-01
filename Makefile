@@ -11,27 +11,37 @@ else
 	DAY_SRC := auto
 endif
 
+ifdef VALIDATE
+	override VALIDATE = -v
+endif
+
+ifdef PART2
+	override PART2 = -2
+endif
+
 .SILENT: list
 
 d%-java: ./src/day%/Solution.java
 	ln -sf ../solutions/day$*.txt ./java/solution.txt
+	ln -sf ../solutions/day$*-2.txt ./java/solution2.txt
 	ln -sf ../inputs/day$*.txt ./java/input.txt
 	ln -sf ../examples/day$*.txt ./java/example.txt
 	
 	ln -sf ../$< ./java/Solution.java
 	
-	cd ./java ; java Main.java $(VALIDATE)
+	cd ./java ; java Main.java $(VALIDATE) $(PART2)
 
 # Default is to use the example and solution
 # set VALIDATE to use the input
 d%-idr: ./src/day%/Solution.idr
 	ln -sf ../solutions/day$*.txt ./idris/solution.txt
+	ln -sf ../solutions/day$*-2.txt ./idris/solution2.txt
 	ln -sf ../inputs/day$*.txt ./idris/input.txt
 	ln -sf ../examples/day$*.txt ./idris/example.txt
 	
 	ln -sf ../../$< ./idris/src/Solution.idr
 	
-	cd ./idris ; pack build && ./build/exec/main $(VALIDATE)
+	cd ./idris ; pack build && ./build/exec/main $(VALIDATE) $(PART2)
 
 # Could be fun to write a small program that checks
 # if the how many puzzles are available, how many input+solution are here
@@ -59,7 +69,9 @@ select-day:
 	ln -sf ../examples/day$(DAY).txt ./java/example.txt
 	ln -sf ../examples/day$(DAY).txt ./idris/example.txt
 	ln -sf ../solutions/day$(DAY).txt ./java/solution.txt
+	ln -sf ../solutions/day$(DAY)-2.txt ./java/solution2.txt
 	ln -sf ../solutions/day$(DAY).txt ./idris/solution.txt
+	ln -sf ../solutions/day$(DAY)-2.txt ./idris/solution2.txt
 	ln -sf ../inputs/day$(DAY).txt ./java/input.txt
 	ln -sf ../inputs/day$(DAY).txt ./idris/input.txt
 	@echo "Set links to day $(DAY)"
@@ -71,8 +83,8 @@ init-java:
 	fi
 	if [ ! -e "./src/day$(DAY)" ]; then mkdir ./src/day$(DAY); fi
 	cp ./templates/Solution.java ./src/day$(DAY)/Solution.java
-	touch ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
-	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
+	touch ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt ./solutions/day$(DAY)-2.txt
+	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt ./solutions/day$(DAY)-2.txt
 
 init-idr:
 	@if [ "$(DAY)" -gt 12 ]; then \
@@ -81,5 +93,5 @@ init-idr:
 	fi
 	if [ ! -e "./src/day$(DAY)" ]; then mkdir ./src/day$(DAY); fi
 	cp ./templates/Solution.idr ./src/day$(DAY)/Solution.idr
-	touch ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
-	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
+	touch ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt ./solutions/day$(DAY)-2.txt
+	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt ./solutions/day$(DAY)-2.txt

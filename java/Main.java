@@ -4,14 +4,25 @@ import java.nio.file.Paths;
 public class Main {
 	public static final String INPUT_RELATIVE_PATH = "./input.txt";
 	public static final String EXAMPLE_RELATIVE_PATH = "./example.txt";
-	public static final String SOLUTION_RELATIVE_PATH = "./solution.txt";
+	public static final String SOLUTION_RELATIVE_PATH = "./solution";
 
 	static String input = null;
 	static String solution = null;
 
 
+	/**
+	 * Main method
+	 * *-v* flag will use the input
+	 * *-2* will do the second part of the day
+	 */
 	public static void main(String[] args) {
-		boolean validate = args.length > 0;
+		boolean validate = false, p2 = false;
+
+		for (String arg: args) {
+			if (arg.equals("-v")) validate = true;
+			if (arg.equals("-2")) p2 = true;
+		}
+
 		if (validate) {
 			System.out.println("Validate mode");
 			var path = Paths.get(INPUT_RELATIVE_PATH);
@@ -24,7 +35,7 @@ public class Main {
 		} else {
 			System.out.println("Example mode");
 			var path = Paths.get(EXAMPLE_RELATIVE_PATH);
-			var patj = Paths.get(SOLUTION_RELATIVE_PATH);
+			var patj = Paths.get(SOLUTION_RELATIVE_PATH + (p2?"2":"") + ".txt" );
 			try {
 				input = Files.readString(path);
 				solution = Files.readString(patj);
@@ -35,7 +46,13 @@ public class Main {
 		}
 
 		Solution solver = new Solution();
-		String sol = solver.solve(input) + "\n";
+		String sol;
+		if (p2) {
+			sol = solver.solve2(input);
+		} else {
+			sol = solver.solve(input);
+		}
+		sol += "\n";
 		System.out.print(sol);
 		if (!validate) {
 			if (sol.equals(solution)) {

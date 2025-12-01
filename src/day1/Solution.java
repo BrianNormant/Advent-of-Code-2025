@@ -31,4 +31,7 @@ public class Solution {
 
 		return "" + result;
 	}
+	public String solve2(String input) {
+		return input;
+	}
 }
