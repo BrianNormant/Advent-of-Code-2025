@@ -13,7 +13,7 @@ import Derive.Prelude
 %language ElabReflection
 
 EXAMPLE_PATH : String
-EXAMPLE_PATH = "./input.txt"
+EXAMPLE_PATH = "./example.txt"
 SOLUTION_PATH : String
 SOLUTION_PATH = "./solution.txt"
 SOLUTION_PATH2 : String
@@ -43,7 +43,7 @@ readSolution : Bool -> IO (Maybe String)
 -- for any other error, the exit code will be 255
 main : IO ()
 main = let opts = getOpt Permute options !getArgs in
-           if any (== Validate) opts.options
+           if all (/= Validate) opts.options
               then do
                 putStrLn "Reading files"
                 Just example <- readExample
@@ -61,7 +61,11 @@ main = let opts = getOpt Permute options !getArgs in
                Just input <- readInput
                | Nothing => putStrLn "./input.txt not found or can't be read"
                putStrLn "Running input"
-               putStrLn input
+               putStrLn (
+                 if all (/= Part2) opts.options
+                    then Solution.sol input
+                    else Solution.sol2 input
+                 )
 
 
 readF : String -> IO (Maybe String)
