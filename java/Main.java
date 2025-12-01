@@ -35,8 +35,16 @@ public class Main {
 		}
 
 		Solution solver = new Solution();
-		String sol = solver.solve(input);
+		String sol = solver.solve(input) + "\n";
 		System.out.print(sol);
+		if (!validate) {
+			if (sol.equals(solution)) {
+				System.out.println("Solution is correct");
+			} else {
+				System.out.println("Solution is incorrect");
+				System.out.println("Expected: " + solution);
+			}
+		}
 		System.exit(0);
 	}
 }
