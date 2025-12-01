@@ -7,7 +7,7 @@ SHELL=zsh
 ifdef DAY
 	DAY_SRC := cli
 else
-	DAY := $(shell date +%d)
+	DAY := $(shell date +%-d)
 	DAY_SRC := auto
 endif
 
@@ -72,7 +72,7 @@ init-java:
 	if [ ! -e "./src/day$(DAY)" ]; then mkdir ./src/day$(DAY); fi
 	cp ./templates/Solution.java ./src/day$(DAY)/Solution.java
 	touch ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
-	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt 
+	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
 
 init-idr:
 	@if [ "$(DAY)" -gt 12 ]; then \
@@ -82,4 +82,4 @@ init-idr:
 	if [ ! -e "./src/day$(DAY)" ]; then mkdir ./src/day$(DAY); fi
 	cp ./templates/Solution.idr ./src/day$(DAY)/Solution.idr
 	touch ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
-	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt 
+	vim -p ./examples/day$(DAY).txt ./inputs/day$(DAY).txt ./solutions/day$(DAY).txt
