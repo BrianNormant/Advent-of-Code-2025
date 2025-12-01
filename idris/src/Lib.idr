@@ -17,6 +17,7 @@ import public Lib.SnocList
 import public Lib.Queue
 
 export infixr 1 ||>
+export infixr 2 <|>
 
 
 ||| Pipeline style function composition.
