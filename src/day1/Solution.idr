@@ -64,4 +64,17 @@ sol = lex tmap
 
 export
 sol2 : String -> String
-sol2 _ = "IMPLEMENT ME"
+sol2 = lex tmap
+  ||> fst
+  ||> parse textGrammar
+  ||> either (const "error") (
+    fst ||> foldl fn (50, 0) ||> snd ||> show
+    )
+  where
+    fn : (Integer, Integer) -> Integer -> (Integer, Integer)
+    fn (dial, zeroes) e = let
+      d := mod (dial + e) 100
+      u := abs $ div (dial + e) 100
+      u := u + (((d == 0) && (e < 0)) <|> (1,0))
+      u := u - (((dial == 0) && (e < 0) && (u > 0)) <|> (1, 0))
+      in (d, zeroes + u)
