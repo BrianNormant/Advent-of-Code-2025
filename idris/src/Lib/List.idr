@@ -115,3 +115,26 @@ sortGroupBy : Eq b => Ord b => (a -> b) -> List a -> List (List a)
 sortGroupBy f l = sortBy (\x,y  => compare (f x) (f y)) l
                |> groupBy (\x,y => (f x) == (f y))
                |> map forget
+
+||| splitAt can only return a smaller list
+||| So we can ascertain that function will converge to the empty list case
+covering
+divideSplit : Nat -> List a -> List (List a)
+divideSplit Z _ = []
+divideSplit _ [] = []
+divideSplit n@(S _) l = let (l1, l2) = splitAt n l in
+                            l1 :: divideSplit n l2
+
+
+covering
+export
+||| divide a list in n equal parts, if the list is not divisible
+||| by n return the empty list
+divideL : Nat -> List a -> List (List a)
+divideL Z _ = []
+divideL 1 l = [l]
+divideL n l = if mod (length l) n == 0
+                 then divideSplit (div (length l) n) l
+                 else []
+
+
