@@ -1,6 +1,7 @@
 module Solution
 
 import Lib
+import Lib.List
 
 import Data.List.Lazy
 
@@ -47,6 +48,9 @@ textGrammar = sepBy (match Comma) rangeGrammar
 lazyRange : (Integer, Integer) -> LazyList (Integer)
 lazyRange (f, t) = iterate (\m => if (m+1) <= t then Just (m+1) else Nothing) f
 
+lazyRangeNat : (Nat, Nat) -> LazyList (Nat)
+lazyRangeNat (f, t) = iterate (\m => if (m+1) <= t then Just (m+1) else Nothing) f
+
 ex : String
 ex = "11-22"
 
@@ -66,4 +70,31 @@ sol = lex tmap
   ||> parse textGrammar
   ||> either (const "error parsing") (
     fst ||> map fn ||> sum ||> show
+  )
+
+allEq : Eq a => List a -> Bool
+allEq [] = False
+allEq [_] = True
+allEq [x,y] = x == y
+allEq (x::xs@(y::ys)) = if x == y then allEq xs
+                                  else False
+
+fn2 : (Integer, Integer) -> Integer
+fn2 r = foldl
+  (\acc, n => let l := show n |> unpack
+                  lr := lazyRangeNat (2, length l)
+                  m := toList $ map ( (flip divideL) l) lr
+                    |> filter allEq
+                    |> toList
+                    |> join
+                  in if (length m) >= 1 then acc + n else acc
+  ) 0 (lazyRange r)
+
+export
+sol2 : String -> String
+sol2 = lex tmap
+  ||> fst
+  ||> parse textGrammar
+  ||> either (const "error parsing") (
+    fst ||> map fn2 ||> sum ||> show
   )
