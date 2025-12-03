@@ -22,6 +22,19 @@ toVect' (S n) (x::xs) = do v <- toVect' n xs
                            pure (x::v)
 
 export
+removeAtAll : {s : Nat} -> Vect (S s) a -> List (Vect (s) a)
+removeAtAll v = allFins (S s) |> map (\f => deleteAt f v)
+removeAtAll_T1 : removeAtAll [1,2,3] = [[2,3], [1,3], [1,2]]
+removeAtAll_T1 = Refl
+
+export
+replaceAtAll : {s : Nat} -> Vect s a -> a -> List (Vect s a)
+replaceAtAll v e = allFins s |> map (\f => replaceAt f e v)
+replaceAtAll_T1 : replaceAtAll [1,2,3] 5 = [[5,2,3], [1,5,3], [1,2,5]]
+replaceAtAll_T1 = Refl
+
+
+export
 indexMaybe : Nat -> Vect n a -> Maybe a
 indexMaybe _ [] = Nothing
 indexMaybe Z (x::_) = Just x

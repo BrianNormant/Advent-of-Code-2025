@@ -1,10 +1,12 @@
 module Solution
 
 import Lib
+import Lib.Vect
 
 import Data.List
 import Data.List.Extra
 import Data.String
+import Data.Vect
 import Debug.Trace
 
 charToInteger : Char -> Integer
@@ -43,7 +45,40 @@ sol = lines
   )
   ||> sum
   ||> show
-  -- ||> const "TODO"
+
+helper1 : Vect n Integer -> Integer
+helper1 l = go $ reverse l where
+  go : Vect m Integer -> Integer
+  go [] = 0
+  go (x::xs) = x + 10 * (go xs)
+
+testH1 : helper1 [1,2,3] = 123
+testH1 = Refl
+
+partialPair : (a -> b) -> a -> (a, b)
+partialPair f e = bimap id f (pair e)
+
+helper2 : {n : Nat} -> Vect (S n) Integer -> Integer -> Vect (S n) Integer
+helper2 l i =
+  partialPair (
+    removeAtAll ||> map (\ll => ll `snoc` i) ||> foldl max (replicate (S n) 0)
+  ) l |> uncurry max
+testH2_1 : helper2 [2,3,4,7] 2 === [3,4,7,2]
+-- testH2_1 = Refl
+
 export
 sol2 : String -> String
-sol2 _ = "IMPLEMENT ME"
+sol2 = lines
+   ||> map (
+     unpack
+     ||> map charToInteger
+     ||> (\l => toVect' (100) l)
+     ||> maybe (-1) (
+       Vect.splitAt 12
+       ||> uncurry (foldl helper2)
+       ||> helper1
+       -- ||> traceVal
+       )
+     )
+   ||> sum
+   ||> show
