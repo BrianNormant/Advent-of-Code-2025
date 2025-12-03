@@ -9,6 +9,8 @@ import Data.String
 import Data.Vect
 import Debug.Trace
 
+%default covering
+
 charToInteger : Char -> Integer
 charToInteger '0' = 0
 charToInteger '1' = 1
@@ -66,19 +68,21 @@ helper2 l i =
 testH2_1 : helper2 [2,3,4,7] 2 === [3,4,7,2]
 -- testH2_1 = Refl
 
+logicSol2 : Vect 12 Integer -> Vect n Integer -> Integer
+logicSol2 cand rest = foldl helper2 cand rest |> helper1
+
 export
 sol2 : String -> String
 sol2 = lines
-   ||> map (
+   ||> traverse (
      unpack
      ||> map charToInteger
-     ||> (\l => toVect' (100) l)
-     ||> maybe (-1) (
-       Vect.splitAt 12
-       ||> uncurry (foldl helper2)
-       ||> helper1
-       -- ||> traceVal
-       )
+     ||> splitAt 12
+     ||> (\(cand, rest) =>
+            do cand <- Vect.toVect 12 cand
+               cand <- Vect.exactLength 12 cand
+               rest <- Vect.toVect (length rest) rest
+               pure $ logicSol2 cand rest
+         )
      )
-   ||> sum
-   ||> show
+   ||> maybe "ERROR" (show . sum)
