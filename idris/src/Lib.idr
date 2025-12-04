@@ -58,6 +58,16 @@ export
 pair : a -> (a, a)
 pair x = (x, x)
 
+export
+||| apply a function to the right element of a pair
+rightPair : (a -> b) -> (a, a) -> (a, b)
+rightPair f = bimap id f
+
+export
+||| apply a function to the left element of a pair
+leftPair : (a -> b) -> (a, a) -> (b, a)
+leftPair f = bimap f id
+
 ||| example: ```
 ||| allNSub 3 [1,2,3,4,5,6] =
 ||| [[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6]]

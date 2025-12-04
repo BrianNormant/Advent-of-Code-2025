@@ -43,6 +43,8 @@ indexMaybe (S i) (x::xs) = indexMaybe i xs
 export
 ||| get the direct neighbors of a cell
 ||| and only the vertical and horizontal ones
+||| with hindsight this function is absurdly over complicated
+||| using the matUR and co functions this could be just 3 lines of code
 neighbors : {n : Nat} -> (Fin n, Fin n) -> Vect n (Vect n a) -> List (a, (Fin n, Fin n))
 neighbors _ [] = []
 neighbors _ [[x]] = [(x, FZ, FZ)]
@@ -118,6 +120,11 @@ export
 ||| index a matrix with x y
 indexMat : (Fin m, Fin n) -> Vect n (Vect m a) -> a
 indexMat (x, y) v = index x $ index y v
+
+export
+||| index but inverse coordinates
+indexMatInv : (Fin n, Fin m) -> Vect n (Vect m a) -> a
+indexMatInv (x, y) v = index y $ index x v
 
 export
 ||| replace an element in a matrix
@@ -244,6 +251,23 @@ matDR : {m : Nat} -> {n : Nat} -> (Fin n, Fin m) -> Maybe (Fin n, Fin m)
 matDR c = do c <- matDown c
              c <- matRight c
              pure c
+
+||| get all the neighbors of a cell in a matrix
+||| this include the diagonals
+||| note: this consider no wrap around
+export
+allNeighbors : {n,m : Nat} -> (Fin n, Fin m) -> Vect n (Vect m a) -> List (a, (Fin n, Fin m))
+allNeighbors (x,y) mat =
+    [
+      matUL, matUp, matUR,
+      matLeft, matRight,
+      matDL, matDown, matDR
+    ]
+    |> map (\f => f (x,y))
+    |> List.catMaybes
+    |> map (\c => ((indexMatInv c mat), c))
+
+
 
 export
 ||| find a polygon in a 2D space
