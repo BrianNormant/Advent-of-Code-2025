@@ -128,6 +128,37 @@ untilSame' Z f a = f a
 untilSame' (S i) f a = let b = f a
                         in (a == b) <|> (b, untilSame' i f b)
 
+||| Repeat a function on a value until the function doesn't change the value
+||| Futher, after each application, apply a function the value to get a result
+||| said result will be accumulated in a list and returned
+||| note: the list is in reverse order of applications
+export partial
+untilSameResult : Eq a => (a -> a) -> (a -> b) -> a -> (a, List b)
+untilSameResult f g el = internal f g el [] where
+  internal : (a -> a) -> (a -> b) -> a -> List b -> (a, List b)
+  internal f g e acc = let e' = f e
+                           r  = g e'
+                           acc' = r :: acc
+                        in if (e' == e)
+                              then (e', acc)
+                              else internal f g e' acc'
+
+export
+||| limited version of untilSameResult
+untilSameResult' : Eq a => Nat -> (a -> a) -> (a -> b) -> a -> (a, List b)
+untilSameResult' n f g el = internal n f g el [] where
+  internal : Nat -> (a -> a) -> (a -> b) -> a -> List b -> (a, List b)
+  internal Z f g e acc = let e' = f e
+                             r   = g e'
+                             acc' = r :: acc
+                          in (e', acc')
+  internal (S k) f g e acc = let e' = f e
+                                 r   = g e'
+                                 acc' = r :: acc
+                              in if (e' == e)
+                                    then (e', acc)
+                                    else internal k f g e' acc'
+
 export
 ||| find the element next to given element in a list
 neighbors : Eq a => a -> List a -> Maybe (These a a)

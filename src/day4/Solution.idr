@@ -54,6 +54,56 @@ sol s = let l := lines s
             ||> show
             )
 
+||| find the rolls that can be removed
+findRemovableRolls : {n,m: Nat} -> Vect n (Vect m Roll) -> List (Fin n, Fin m)
+findRemovableRolls =
+  pair
+  ||> (rightPair allCoord)
+  ||> (\(mat, coords) =>
+        filter (\c => (indexMat c mat) == Here ) coords
+        |> map (\c => (
+               allNeighbors (swap c) mat
+               |> filter (\(r,_) => r == Here)
+               |> length
+               |> MkPair c
+        ))
+        |> filter (\(_, l) => l < 4)
+        |> map (swap . fst)
+      )
+
+||| find the rolls that can be removed
+||| remove them
+||| return the updated grid
+removeRolls : {n,m:Nat} -> Vect n (Vect m Roll) -> Vect n (Vect m Roll)
+removeRolls mat = let removable := findRemovableRolls mat
+                   in remove removable mat where
+  remove : List (Fin n, Fin m) -> Vect n (Vect m Roll) -> Vect n (Vect m Roll)
+  remove [] mat = mat
+  remove (x::xs) mat = remove xs (replaceMat (swap x) mat Empty)
+
+countRolls : {n,m:Nat} -> Vect n (Vect m Roll) -> Nat
+countRolls = toListMat ||> filter (== Here) ||> length
+
+MAX_ITERATION : Nat
+MAX_ITERATION = 1000
+
 export
 sol2 : String -> String
-sol2 _ = "IMPLEMENT ME"
+sol2 s = let l := lines s
+             n := length l
+             m := maybe 0 length (head' l)
+          in parseGrid {n=n,m=m} s
+          |> maybe "Error parsing" (
+              pair
+              ||> bimap (
+                untilSameResult' MAX_ITERATION removeRolls countRolls
+                ||> snd
+                ) countRolls
+              ||> bimap (map natToInteger) natToInteger
+              ||> (\(l, i) =>
+                    foldr (\current,(last,removed)
+                          => (current, removed + (last - current)) ) (i,0) l
+                  )
+              ||> snd
+              ||> show
+             )
