@@ -51,10 +51,16 @@ main = let opts = getOpt Permute options !getArgs in
                 Just solution <- readSolution (any (== Part2) opts.options)
                 | Nothing => putStrLn "./solution.txt not found or can't be read"
                 putStrLn "Running example"
-                putStrLn (
+                ex <- pure $ (
                   if all (/= Part2) opts.options
-                     then Solution.sol example
-                     else Solution.sol2 example
+                     then (Solution.sol example) ++ "\n"
+                     else (Solution.sol2 example) ++ "\n"
+                  )
+                putStrLn (
+                  if ex == solution then "Success"
+                                    else "Wrong solution\n" ++
+                                    "expected: " ++ solution ++
+                                    "got: " ++ ex
                   )
              else do
                putStrLn "Reading files"
