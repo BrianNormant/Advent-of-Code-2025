@@ -64,14 +64,12 @@ sol = lex tmap
     )
 
 mergeRanges : List Range -> Range -> List Range
-mergeRanges l r = last' l
-               |> maybe [r] (
-                 \last => let before : List Range
-                              before = fromMaybe [] $ tail' $ reverse l
-                           in case merge last r of
-                                   Left last' => before `snoc` last'
-                                   Right _ => l `snoc` r
-                 )
+mergeRanges l r =
+  let Just last := last' l | Nothing => [r]
+      Just before := tail' $ reverse l | Nothing => l
+   in case merge last r of
+           Left last' => before `snoc` last
+           Right _    => l `snoc` r
 
 export
 sol2 : String -> String
