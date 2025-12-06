@@ -5,6 +5,7 @@ import Debug.Trace
 
 import Data.DPair
 import Data.List
+import Data.List1
 import Data.String
 import Data.Vect
 
@@ -19,8 +20,6 @@ operator '+' = Just Add
 operator '*' = Just Multiply
 operator _ = Nothing
 
-ex : String
-ex = "*   +   *   +  "
 
 parseNumber : List String -> Maybe (n ** Vect n (List Integer))
 parseNumber s = let wds := map words s
@@ -73,6 +72,37 @@ sol : String -> String
 sol = parse
   ||> maybe "Error Parsing" (logic1 ||> show)
 
+
+ex : List String
+ex = [
+  "123 328  51 64 ",
+  " 45 64  387 23 ",
+  "  6 98  215 314"
+  ]
+
+parseNumber2 : List String -> Maybe (n ** Vect n (List Integer))
+parseNumber2 =
+  map unpack
+  ||> transpose
+  ||> split (all (== ' '))
+  ||> forget
+  ||> map (map (map String.singleton))
+  ||> map (map (joinBy ""))
+  ||> traverse (traverse parseInteger)
+  ||> (=<<) (\l => let s := length l
+                       Just v := toVect s l | _ => Nothing
+                    in Just (s ** v)
+        )
+
+parse2 : String -> Maybe (n ** (Vect n Operator, Vect n (List Integer)))
+parse2 s = let lines := lines s
+               S lst_idx := length lines | _ => Nothing
+               (numbers, operators) := splitAt lst_idx lines
+            in do operators <- head' operators
+                  ints <- parseNumber2 numbers
+                  ops <- parseOperator operators
+                  combine ints ops
 export
 sol2 : String -> String
-sol2 _ = "IMPLEMENT ME"
+sol2 = parse2
+   ||> maybe "Error Parsing" (logic1 ||> show)

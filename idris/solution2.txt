@@ -1,1 +1,1 @@
-../solutions/day5-2.txt
+../solutions/day6-2.txt
