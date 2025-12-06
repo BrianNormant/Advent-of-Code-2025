@@ -27,19 +27,14 @@ parseNumber s = let wds := map words s
                     -- wds@[f::_] := map words s | _ => Nothing
                     l := length f -- number of columns
                  in do tmp <- traverse {t=List,f=Maybe} (traverse parseInteger) wds
-                       v <- toVect l $ transpose tmp
-                       Just (l ** v)
+                       Just $ fromListDP tmp
 
 parseOperator : String -> Maybe (n ** Vect n Operator)
 parseOperator = words
             ||> map unpack
             ||> traverse (head')
             ||> (=<<) (traverse operator)
-            ||> (=<<) (\l =>
-                 let s := length l
-                     Just v := toVect s l | _ => Nothing
-                  in Just (s ** v)
-                 )
+            ||> map fromListDP
 
 combine : (n ** Vect n (List Integer)) ->
           (m ** Vect m Operator) ->
@@ -72,14 +67,6 @@ sol : String -> String
 sol = parse
   ||> maybe "Error Parsing" (logic1 ||> show)
 
-
-ex : List String
-ex = [
-  "123 328  51 64 ",
-  " 45 64  387 23 ",
-  "  6 98  215 314"
-  ]
-
 parseNumber2 : List String -> Maybe (n ** Vect n (List Integer))
 parseNumber2 =
   map unpack
@@ -89,10 +76,7 @@ parseNumber2 =
   ||> map (map (map String.singleton))
   ||> map (map (joinBy ""))
   ||> traverse (traverse parseInteger)
-  ||> (=<<) (\l => let s := length l
-                       Just v := toVect s l | _ => Nothing
-                    in Just (s ** v)
-        )
+  ||> map fromListDP
 
 parse2 : String -> Maybe (n ** (Vect n Operator, Vect n (List Integer)))
 parse2 s = let lines := lines s
@@ -106,3 +90,9 @@ export
 sol2 : String -> String
 sol2 = parse2
    ||> maybe "Error Parsing" (logic1 ||> show)
+
+
+exVect1 : IO ()
+exVect1 = do
+  line <- getLine
+  putStrLn $ show (Vect.fromList (words line))

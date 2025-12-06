@@ -14,6 +14,10 @@ dropLast : Vect (S n) a -> Vect n a
 dropLast = reverse . tail . reverse
 
 export
+fromListDP : List a -> (n ** Vect n a)
+fromListDP l = ((length l) ** (fromList l))
+
+export
 toVect' : (n : Nat) -> List a -> Maybe (Vect n a)
 toVect' Z [] = Just []
 toVect' Z _ = Just []
