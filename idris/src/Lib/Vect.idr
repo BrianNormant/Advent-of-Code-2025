@@ -132,17 +132,30 @@ indexMatInv (x, y) v = index y $ index x v
 
 export
 ||| replace an element in a matrix
-replaceMat : (Fin m, Fin n) -> Vect n (Vect m a) -> a -> Vect n (Vect m a)
-replaceMat (x, y) v a = let lin = index y v
-                            lin = replaceAt x a lin
-                         in replaceAt y lin v
+replaceMatAt : (Fin m, Fin n) -> Vect n (Vect m a) -> a -> Vect n (Vect m a)
+replaceMatAt (x, y) v a = let lin = index y v
+                              lin = replaceAt x a lin
+                           in replaceAt y lin v
+
+||| replace an element in a vector if it match a predicate
+export
+replaceWhen : (a -> Bool) -> a -> Vect n a -> Vect n a
+replaceWhen f _ [] = []
+replaceWhen f r (v::vs) = (if f v then r else v) :: (replaceWhen f r vs)
+
+||| replace all element that match a predicate
+export
+replaceMatWhen : (a -> Bool) -> a -> Vect n (Vect m a) -> Vect n (Vect m a)
+replaceMatWhen f _ [] = []
+replaceMatWhen f r (v::vs) = let v' = replaceWhen f r v
+                              in v' :: (replaceMatWhen f r vs)
 
 export
 ||| apply a function at a position in a matrix
 doAtMat : (Fin m, Fin n) -> (a -> a) -> Vect n (Vect m a) -> Vect n (Vect m a)
 doAtMat (x, y) f v = let old = indexMat (x, y) v
                          new = f old
-                      in replaceMat (x, y) v new
+                      in replaceMatAt (x, y) v new
 
 export
 mapMat : (a -> b) -> Vect n (Vect m a) -> Vect n (Vect m b)
