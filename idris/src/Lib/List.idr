@@ -7,6 +7,28 @@ import Data.Integral
 
 %default total
 
+||| Decide if a list is non empty
+public export
+isNonEmpty : (l : List a) -> Dec (NonEmpty l)
+isNonEmpty [] = No uninhabited
+isNonEmpty (_::_) = Yes IsNonEmpty
+
+reversePreservesNonEmpty : {l : List a} -> NonEmpty l -> NonEmpty (reverseOnto [] l)
+reversePreservesNonEmpty (IsNonEmpty {x} {xs}) =
+  helper [x] xs where
+     helper : (i : List a) -> (j : List a) ->
+              {auto 0 ok : NonEmpty i} ->
+              NonEmpty (reverseOnto i j)
+     helper [] [] impossible
+     helper (x::_) [] = IsNonEmpty
+     helper li (y::ys) = helper (y::li) ys
+
+reverseIsReverseOnto : {l : List a} -> reverse l = reverseOnto [] l
+reverseIsReverseOnto = Refl
+
+dropLast : (l : List a) -> {auto 0 ok : NonEmpty l} -> List a
+dropLast l = reverse $ tail (reverseOnto [] l) {ok = reversePreservesNonEmpty ok}
+
 ||| Same as index'
 ||| Construct a new list consisting of all but the indicated element.
 ||| But use Fin instead of a proof
