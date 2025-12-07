@@ -192,6 +192,12 @@ zipWithIndexMat : {n,m : Nat} -> Vect n (Vect m a) -> Vect n (Vect m ((Fin m, Fi
 zipWithIndexMat v = zipWith (\j,vs => zipWith (\i,a => ((i,j), a)) (allFins m) vs) (allFins n) v
 
 export
+matFindIdx : {n,m : Nat} -> (a -> Bool) -> Vect n (Vect m a) -> Maybe (Fin m, Fin n)
+matFindIdx f mat = zipWithIndexMat mat
+                |> matFind (\((i,j),e) => f e)
+                |> map fst
+
+export
 ||| list all the coordinates of a matrix
 allCoord : {n : Nat} -> {m : Nat} -> Vect n (Vect m a) -> List (Fin m, Fin n)
 allCoord {n, m} _ = bisequence ((List.allFins m), (List.allFins n))

@@ -22,6 +22,17 @@ shift1 : Fin n -> Fin (S n)
 shift1 x = FS x
 
 export
+decrement : Fin n -> Fin n
+decrement FZ = FZ
+decrement (FS x) = weaken x
+
+export
+increment : {n:Nat} -> Fin (S n) -> Fin (S n)
+increment f = finToInteger f
+           |> (+) 1
+           |> restrict n
+
+export
 dec : {n:Nat} -> Fin n -> Maybe (Fin n)
 dec FZ = Nothing
 dec (FS x) = Just $ weaken x
