@@ -77,36 +77,37 @@ findClosest l = do s <- trySub (length l)
   go [] _ _ = Nothing
   go (_::_) _ _ = Nothing
 
+
+--- because the number of repetion is different in example and input
+checkRepeat : Nat -> Nat
+checkRepeat 20 = 11
+checkRepeat _ = 1000
+updateGroups : List (SortedSet Point3D) -> Point3D -> Point3D -> List (SortedSet Point3D)
+updateGroups gs a b = (case findIndices (\g => (contains a g || contains b g)) gs of
+                           [i1,i2] => do i1' <- natToFin i1 $ length gs
+                                         i2' <- natToFin i2 $ length gs
+                                         let g2 = index' gs i2'
+                                         let g1 = foldl (\g,p => insert p g) (index' gs i1') (index' gs i2')
+                                         let g1 = insert b (insert a g1)
+                                         let gs = replaceAt' gs i1' g1
+                                         pure $ delete g2 gs
+                           [i] => do i' <- natToFin i (length gs)
+                                     let g = index' gs i'
+                                     Just $ replaceAt' gs i' $ insert a (insert b g)
+                           [] => Just $ (fromList [a,b]) :: gs
+                           _ => Nothing
+                      ) |> fromMaybe gs
+
+
+iteration : List (List1 Point3D) -> List (SortedSet Point3D) -> (List (List1 Point3D), List (SortedSet Point3D))
+iteration close groups =
+  case findClosest close of
+       Just (a,b,c) => (c, updateGroups groups a b)
+       Nothing => (close, groups)
+
 ||| find the closests node, remove them and add them to the linked nodes
 linkClosests : List (List1 Point3D) -> (List (List1 Point3D), List (SortedSet Point3D))
-linkClosests i = repeat 1000 (\(c,g) => go c g) (i,[])
-  where
-  --- because the number of repetion is different in example and input
-  checkRepeat : Nat -> Nat
-  checkRepeat 20 = 11
-  checkRepeat _ = 1000
-  updateGroups : List (SortedSet Point3D) -> Point3D -> Point3D -> List (SortedSet Point3D)
-  updateGroups gs a b = (case findIndices (\g => (contains a g || contains b g)) gs of
-                             [i1,i2] => do i1' <- natToFin i1 $ length gs
-                                           i2' <- natToFin i2 $ length gs
-                                           let g2 = index' gs i2'
-                                           let g1 = foldl (\g,p => insert p g) (index' gs i1') (index' gs i2')
-                                           let g1 = insert b (insert a g1)
-                                           let gs = replaceAt' gs i1' g1
-                                           pure $ delete g2 gs
-                             [i] => do i' <- natToFin i (length gs)
-                                       let g = index' gs i'
-                                       Just $ replaceAt' gs i' $ insert a (insert b g)
-                             [] => Just $ (fromList [a,b]) :: gs
-                             _ => Nothing
-                        ) |> fromMaybe gs
-
-
-  go : List (List1 Point3D) -> List (SortedSet Point3D) -> (List (List1 Point3D), List (SortedSet Point3D))
-  go close groups =
-    case findClosest close of
-         Just (a,b,c) => (c, updateGroups groups a b)
-         Nothing => (close, groups)
+linkClosests i = repeat 1000 (\(c,g) => iteration c g) (i,[])
 
 
 export
@@ -130,6 +131,35 @@ sol l = lines l
        -- ||> show
        )
 
+
+||| find the closests node, remove them and add them to the linked nodes
+linkClosests2 : List (List1 Point3D) -> (List (List1 Point3D), List (SortedSet Point3D))
+linkClosests2 i = let s := map (singleton . head) i
+                   in until' 99999 (\(_,g) => length g == 2) (\(c,g) => iteration c g) (i,s)
+
+|||
+findClosest2 : List (SortedSet Point3D) -> Maybe (Point3D, Point3D)
+findClosest2 [g1, g2] = let g1 := Prelude.toList g1
+                            g2 := Prelude.toList g2
+                            z := bisequence (g1,g2)
+                              |> sortBy (\(a1,a2),(b1,b2) => compare (distance a1 a2)
+                                                                     (distance b1 b2))
+                              |> head'
+                         in z
+findClosest2 _ = Nothing
+
 export
 sol2 : String -> String
-sol2 _ = "IMPLEMENT ME"
+sol2 l = lines l
+      |> traverse parseline
+      |> maybe "error parsing" (
+        closest
+        ||> linkClosests2
+        ||> snd
+        ||> findClosest2
+        ||> map (\((x1,_),(x2,_)) => x1 * x2)
+        ||> fromMaybe 0
+        ||> pretty
+        ||> Doc.render (Opts 60)
+        -- ||> show
+        )
