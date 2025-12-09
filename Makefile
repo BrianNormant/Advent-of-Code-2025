@@ -53,6 +53,19 @@ list:
 	echo "Idris Solutions:"
 	for day in $(DAYS_IDR2); do echo Day $$day avalaible; done
 
+
+time-all:
+	@for day in $(DAYS_IDR2); do \
+		make select-day DAY=$$day > /dev/null ;\
+		cd ./idris > /dev/null ;\
+		touch ./src/Solution.idr > /dev/null ;\
+		pack build > /dev/null ;\
+		echo "\tDay $$day" ;\
+		time ./build/exec/main -v ;\
+		time ./build/exec/main -v -2 ;\
+		cd ./.. > /dev/null ; \
+	done
+
 # set the link to the correct day in build
 select-day:
 	@if [ "$(DAY_SRC)" = "auto" ]; then \

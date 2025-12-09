@@ -43,7 +43,6 @@ sol = lines
                     else (n1, n2)
       )) (0, 0)
     ||> (\(d,u) => d * 10 + u)
-    ||> traceVal
   )
   ||> sum
   ||> show
