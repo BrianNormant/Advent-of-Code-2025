@@ -46,6 +46,20 @@ combination _ [] = []
 combination m@(S n) (x::xs) = (map (x ::) (combination n xs))
                            ++ (combination m xs)
 
+
+-- generate combinations lazily
+export
+combiLazy : Nat -> List a -> LazyList (List a)
+combiLazy Z _ = fromList [[]]
+combiLazy (S k) xs = go xs
+  where
+    inner : LazyList (List a)
+    inner = combiLazy k xs
+    go : List a -> LazyList (List a)
+    go [] = empty
+    go (x :: rest) =
+      map (x ::) inner ++ Delay (go rest)
+
 export
 sortP : Ord a => (a,a) -> (a,a)
 sortP (x,y) = if x < y then (x,y) else (y,x)
