@@ -32,12 +32,23 @@ export
 permutation : List a -> List b -> List (a,b)
 permutation xx yy = MkPair xx yy |> bisequence
 
+||| create the all the permutation of a b
+||| but consider (a,b) and (b,a) as the same
+export
+permutationUniq : List a -> List (a,a)
+permutationUniq [] = []
+permutationUniq (x::xs) = map (MkPair x) xs ++ permutationUniq xs
+
 export
 combination : (n : Nat) -> List a -> List (Vect n a)
 combination Z _ = [[]]
 combination _ [] = []
 combination m@(S n) (x::xs) = (map (x ::) (combination n xs))
                            ++ (combination m xs)
+
+export
+sortP : Ord a => (a,a) -> (a,a)
+sortP (x,y) = if x < y then (x,y) else (y,x)
 
 export
 fromVect2 : Vect 2 a -> (a, a)
