@@ -58,13 +58,6 @@ dfsSearch a1 a2 a3 = fst $ dfs empty a1 a2 a3
       _ | (False, Nothing) = (0, cache)
       _ | (False, Just next) = foldl (searchNext to graph) (0, cache) next
 
-strex : String
-strex = """
-aaa: you hhh
-you: bbb ccc
-bbb: ddd eee
-"""
-
 export
 sol : String -> String
 sol s = let graph := text s
@@ -73,6 +66,36 @@ sol s = let graph := text s
          in dfsSearch from to graph
          |> show
 
+ex2 = """
+svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out
+"""
+
 export
 sol2 : String -> String
-sol2 _ = "IMPLEMENT ME"
+-- sol2 _ = let graph := text ex2
+sol2 s = let graph := text s
+             from := MkNode "svr"
+             stp1 := MkNode "dac"
+             stp2 := MkNode "fft"
+             endt := MkNode "out"
+             n1  := dfsSearch stp1 stp2 graph
+             n1' := dfsSearch stp2 stp1 graph
+          in if (n1 == 0) -- the connection in the graph is from stp2 -> stp1
+                then let n0 := dfsSearch from stp2 graph
+                         n2 := dfsSearch stp1 endt graph
+                      in show $ (n0 * n1' * n2)
+                else let n0 := dfsSearch from stp1 graph
+                         n2 := dfsSearch stp2 endt graph
+                      in show $ (n0 * n1 * n2)
