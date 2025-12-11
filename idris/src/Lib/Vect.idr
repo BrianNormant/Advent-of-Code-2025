@@ -14,6 +14,11 @@ dropLast : Vect (S n) a -> Vect n a
 dropLast = reverse . tail . reverse
 
 export
+||| map with index
+mapi : {n:Nat} -> (a -> (Fin n) -> b) -> Vect n a -> Vect n b
+mapi f v = zipWith f v (allFins n)
+
+export
 fromListDP : List a -> (n ** Vect n a)
 fromListDP l = ((length l) ** (fromList l))
 

@@ -29,6 +29,11 @@ reverseIsReverseOnto = Refl
 dropLast : (l : List a) -> {auto 0 ok : NonEmpty l} -> List a
 dropLast l = reverse $ tail (reverseOnto [] l) {ok = reversePreservesNonEmpty ok}
 
+export
+contains : Eq a => List a -> a -> Bool
+contains [] _ = False
+contains (x::xs) y = if (x == y) then True else contains xs y
+
 ||| Same as index'
 ||| Construct a new list consisting of all but the indicated element.
 ||| But use Fin instead of a proof

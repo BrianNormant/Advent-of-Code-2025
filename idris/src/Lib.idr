@@ -46,6 +46,28 @@ combination _ [] = []
 combination m@(S n) (x::xs) = (map (x ::) (combination n xs))
                            ++ (combination m xs)
 
+export
+subsets : List a -> List (List a)
+subsets [] = [[]]
+subsets (x :: xs) =
+  let rest = subsets xs
+  in rest ++ map (x ::) rest
+
+-- export
+-- subsetsLazy : List a -> LazyList (List a)
+-- subsetsLazy [] = fromList [[]]
+-- subsetsLazy (x :: xs) =
+--   let rest = Delay (subsetsLazy xs)
+--   in rest ++ Delay (map (x ::) rest)
+
+export
+subsetsLazy : List a -> LazyList (List a)
+subsetsLazy = go []
+  where
+    go : List a -> List a -> LazyList (List a)
+    go acc [] = fromList [acc]
+    go acc (x :: xs) =
+      fromList [acc] ++  (go (x :: acc) xs) ++ (go acc xs)
 
 -- generate combinations lazily
 export
